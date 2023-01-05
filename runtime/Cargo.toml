@@ -21,7 +21,7 @@ edition = "2018"
 async-ctrlc ={version = "1.2.0", features = ["stream"]}
 async-std = { version = "=1.12.0", features = ["attributes"] }
 zenoh-flow = { git = "https://github.com/eclipse-zenoh/zenoh-flow.git", branch = "master"}
-zenoh = { version = "0.6.0-beta.1" }
+zenoh = { version = "=0.7.0-rc" }
 clap = { version = "3.1.1", features = ["derive"] }
 log = "0.4"
 serde_yaml = "0.9"
