@@ -88,6 +88,9 @@ async fn main() {
         loader,
         runtime_name: opt.runtime.clone().into(),
         runtime_uuid: uuid::Uuid::new_v4(),
+        shared_memory_backoff: 500,
+        shared_memory_element_size: 1024_000,
+        shared_memory_elements: 100,
     };
 
     // loading the descriptor
@@ -109,7 +112,7 @@ async fn main() {
     _write_record_to_file(dfr.clone(), "computed-record.yaml");
 
     // creating dataflow
-    let dataflow = zenoh_flow::runtime::dataflow::DataFlow::try_new(dfr, ctx.clone() ).unwrap();
+    let dataflow = zenoh_flow::runtime::dataflow::DataFlow::try_new(dfr, ctx.clone()).unwrap();
 
     // instantiating
     let mut instance = zenoh_flow::runtime::dataflow::instance::DataFlowInstance::try_instantiate(
