@@ -91,6 +91,7 @@ async fn main() {
         shared_memory_backoff: 500,
         shared_memory_element_size: 1024_000,
         shared_memory_elements: 100,
+        use_shm: false,
     };
 
     // loading the descriptor
