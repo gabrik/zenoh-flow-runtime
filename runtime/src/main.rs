@@ -143,33 +143,35 @@ async fn main() {
         instance.start_node(id).unwrap()
     }
 
-    let ctrlc = CtrlC::new().expect("Unable to create Ctrl-C handler");
-    let mut stream = ctrlc.enumerate().take(1);
-    stream.next().await;
-    log::trace!("Received Ctrl-C start teardown");
+    let () = std::future::pending().await;
 
-    // Stopping nodes
-    let sources = instance.get_sources();
-    for id in &sources {
-        instance.stop_node(id).await.unwrap()
-    }
+    // let ctrlc = CtrlC::new().expect("Unable to create Ctrl-C handler");
+    // let mut stream = ctrlc.enumerate().take(1);
+    // stream.next().await;
+    // log::trace!("Received Ctrl-C start teardown");
 
-    let mut sinks = instance.get_sinks();
-    for id in sinks.drain(..) {
-        instance.stop_node(&id).await.unwrap()
-    }
+    // // Stopping nodes
+    // let sources = instance.get_sources();
+    // for id in &sources {
+    //     instance.stop_node(id).await.unwrap()
+    // }
 
-    let mut operators = instance.get_operators();
-    for id in operators.drain(..) {
-        instance.stop_node(&id).await.unwrap()
-    }
+    // let mut sinks = instance.get_sinks();
+    // for id in sinks.drain(..) {
+    //     instance.stop_node(&id).await.unwrap()
+    // }
 
-    let mut connectors = instance.get_connectors();
-    for id in connectors.drain(..) {
-        instance.stop_node(&id).await.unwrap()
-    }
+    // let mut operators = instance.get_operators();
+    // for id in operators.drain(..) {
+    //     instance.stop_node(&id).await.unwrap()
+    // }
 
-    log::trace!("Bye!");
+    // let mut connectors = instance.get_connectors();
+    // for id in connectors.drain(..) {
+    //     instance.stop_node(&id).await.unwrap()
+    // }
+
+    // log::trace!("Bye!");
 }
 
 fn get_zenoh_config(path: &str) -> Result<Config> {
