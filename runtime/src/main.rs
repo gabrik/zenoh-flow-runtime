@@ -26,7 +26,7 @@ use zenoh::prelude::r#async::*;
 use zenoh_flow::runtime::dataflow::loader::{Loader, LoaderConfig};
 use zenoh_flow::runtime::RuntimeContext;
 use zenoh_flow::Result;
-
+use zenoh::prelude::r#async::*;
 #[derive(Debug, Parser)]
 #[clap(name = "dpn")]
 struct Opt {
@@ -55,6 +55,42 @@ fn _write_flatten_to_file(
     let path = Path::new(filename);
     let mut write_file = File::create(path).unwrap();
     write!(write_file, "{}", descriptor.to_yaml().unwrap()).unwrap();
+}
+
+
+
+/// Gets the machine Uuid.
+///
+/// # Errors
+/// Returns an error variant if unable to get or parse the Uuid.
+pub fn get_machine_uuid() -> ZenohId {
+    let machine_id = machine_uid::get().expect("Failed to parse machine uid");
+
+    let machine_id = sanitize_machine_id(machine_id);
+
+    machine_id
+        .parse::<ZenohId>()
+        .expect("Failed to parse a ZenohId")
+}
+
+fn sanitize_machine_id(mut machine_id: String) -> String {
+    // To conform to the ZenohId, the machine_id should:
+    // 1. not contain capital letters,
+    machine_id.make_ascii_lowercase();
+    // 2. not contain dashes,
+    let mut machine_id = machine_id.split('-').collect::<String>();
+    // 3. not start by '0',
+    if machine_id.starts_with('0') {
+        log::warn!("machine_uuid starts with a '0', replacing it with 'a'");
+        machine_id.replace_range(0..1, "a");
+    }
+    // 4. length should be an even number.
+    if machine_id.len() % 2 != 0 {
+        machine_id.push('f');
+        log::warn!("machine_uuid has an odd number of characters, adding a final 'f'");
+    }
+
+    machine_id
 }
 
 #[async_std::main]
@@ -87,7 +123,7 @@ async fn main() {
         hlc,
         loader,
         runtime_name: opt.runtime.clone().into(),
-        runtime_uuid: uuid::Uuid::new_v4(),
+        runtime_uuid: get_machine_uuid(),
         shared_memory_backoff: 500,
         shared_memory_element_size: 1024_000,
         shared_memory_elements: 100,

@@ -19,4 +19,4 @@ First, let's build an example runtime to run the examples
 cargo build --release -p runtime
 ```
 
-This will create the runtime binary in `./target/release/runtime`
+This will create the runtime binary in `./target/debug/runtime`
